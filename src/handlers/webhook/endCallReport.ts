@@ -1,6 +1,8 @@
 import { EndOfCallReportPayload } from "../types/vapi.types";
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import prisma from "../../lib/prisma"
+
 export const endOfCallReportHandler = async (
   payload?: EndOfCallReportPayload
 ): Promise<void> => {
@@ -21,7 +23,7 @@ export const endOfCallReportHandler = async (
     const timestamp = new Date().toISOString().replace(/:/g, '-');
     const filename = `call_${timestamp}.json`;
     const filePath = path.join(logsDir, filename);
-
+    // console.log(payload);
     // Prepare data with important information from the payload
     const dataToSave = {
  
@@ -53,8 +55,32 @@ export const endOfCallReportHandler = async (
     );
 
     console.log(`Transcript saved to ${transcriptPath}`);
-    return;
-
+    try {
+      console.log("inside prisma")
+      
+      console.log("inside prisma2")
+      const user = await prisma.user.create({
+        data: {
+          name: "Test User",
+          email: "test@example.com",
+          password: "hashedpassword"
+        }
+      });
+      console.log('User created:', user);
+    
+      const session = await prisma.session.create({
+        data: {
+          userId: user.id,
+          transcript: payload.transcript,
+          summary: payload.summary || 'No summary available',
+        }
+      });
+      console.log('Session created:', session);
+    } catch (prismaError) {
+      console.error('Error interacting with Prisma:', prismaError);
+    }
+    return
+   
   } catch (error) {
     console.error('Failed to save end of call report:', error);
   }

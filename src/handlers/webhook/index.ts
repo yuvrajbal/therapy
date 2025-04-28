@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import {  VapiPayload, VapiWebhookEnum } from "../types/vapi.types";
 import { endOfCallReportHandler } from "./endCallReport";
+import { assistantRequestHandler } from "./assistantRequest";
+import { fetchUserDataHandler } from "./toolCall";
 export const webhookHandler = async (
   req: Request,
   res: Response
@@ -9,7 +11,10 @@ export const webhookHandler = async (
     const payload = req.body.message as VapiPayload;
     switch (payload.type) {
       case VapiWebhookEnum.END_OF_CALL_REPORT:
-        return res.status(201).json(await endOfCallReportHandler(payload));
+        await endOfCallReportHandler(payload);
+        return res.status(201).json({success:true});
+      case VapiWebhookEnum.TOOL_CALL:
+        return res.status(201).json(await fetchUserDataHandler(payload));
       default:
         throw new Error(`Unhandled message type`);
     }

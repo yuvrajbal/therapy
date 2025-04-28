@@ -21,8 +21,11 @@ app.use(bodyParser.json());
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
+app.get('/', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
 
-app.post("/webhook", webhookHandler);
+app.use("/webhook", webhookHandler);
 
 // Start server
 async function startServer() {
