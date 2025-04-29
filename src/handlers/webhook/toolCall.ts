@@ -26,7 +26,7 @@ export const fetchUserDataHandler = async(payload: any) => {
     results: [
       {
         toolCallId : toolCalls[0].id,
-        result:result
+        result:result.summaries
       }
     ]
   }

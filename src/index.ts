@@ -27,21 +27,6 @@ app.get('/', (req, res) => {
 
 app.use("/webhook", webhookHandler);
 
-// Start server
-async function startServer() {
-  // Connect to MongoDB first
-  const isConnected = await connectToDatabase();
-  
-  if (isConnected) {
-    app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
-    });
-  } else {
-    console.error('Server startup failed due to database connection issues');
-    process.exit(1);
-  }
-}
-
 // startServer();
 app.listen(port, host, () => {
   console.log(`[ ready ] http://${host}:${port}`);

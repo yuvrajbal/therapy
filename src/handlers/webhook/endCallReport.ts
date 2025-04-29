@@ -2,6 +2,7 @@ import { EndOfCallReportPayload } from "../types/vapi.types";
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import prisma from "../../lib/prisma"
+import { sendUserData } from "../tools/sendUserData";
 
 export const endOfCallReportHandler = async (
   payload?: EndOfCallReportPayload
@@ -23,10 +24,9 @@ export const endOfCallReportHandler = async (
     const timestamp = new Date().toISOString().replace(/:/g, '-');
     const filename = `call_${timestamp}.json`;
     const filePath = path.join(logsDir, filename);
-    // console.log(payload);
+    
     // Prepare data with important information from the payload
     const dataToSave = {
- 
       endedReason: payload.endedReason,
       timestamp: new Date().toISOString(),
       transcript: payload.transcript,
@@ -55,37 +55,22 @@ export const endOfCallReportHandler = async (
     );
 
     console.log(`Transcript saved to ${transcriptPath}`);
-    try {
-      console.log("inside prisma")
-      
-      console.log("inside prisma2")
-      const user = await prisma.user.create({
-        data: {
-          name: "Test User",
-          email: "test@example.com",
-          password: "hashedpassword"
-        }
-      });
-      console.log('User created:', user);
     
-      const session = await prisma.session.create({
-        data: {
-          userId: user.id,
-          transcript: payload.transcript,
-          summary: payload.summary || 'No summary available',
-        }
-      });
-      console.log('Session created:', session);
-    } catch (prismaError) {
-      console.error('Error interacting with Prisma:', prismaError);
+    // Save data to database
+    try {
+      const result = await sendUserData(payload);
+      if(result) {
+        console.log("User data saved to database successfully:");
+      } else {
+        console.error("Failed to save user data to database");
+      }
+    } catch (dbError) {
+      console.error("Database error while saving user data:", dbError);
     }
-    return
+    
+    return;
    
   } catch (error) {
     console.error('Failed to save end of call report:', error);
   }
-  
-
-
-  
 };

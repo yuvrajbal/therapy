@@ -1,13 +1,53 @@
-import { readFileSync } from "fs";
-
+import { PrismaClient } from "@prisma/client";
 
 type fetchUserDataParams = {
-  toolCallparameters: any;
+  toolCallparameters: {
+    userID:string;
+  };
 };
+const prisma = new PrismaClient();
 
 export const fetchUserData = async ({
   toolCallparameters,
 }: fetchUserDataParams) => {
-  console.log("trigger fetch user data for ", toolCallparameters);
-  return "User's name is Yuvrj Bal and email is yb@gmail.com";
+  const {userID} = toolCallparameters
+  console.log("Fetching user data for userId from toolcall", userID)
+  try{
+    const userData = await prisma.user.findUnique({
+      where:{
+        id:"db874e6e-cb59-4068-899e-3b316b44fbe0"
+      },
+      include:{
+        sessions:{
+          orderBy:{
+            createdAt:'desc'
+          },
+          select:{
+            summary:true,
+            createdAt:true
+          }
+        }
+      }
+    })
+    if (!userData){
+      return {error:"User not found"};
+
+    }
+    const {password,sessions,...userDataWithoutPassword} = userData;
+    const summaries = sessions.map((session) => ({
+      summary:session.summary,
+      createdAt: session.createdAt
+    }))
+    return {
+      user:userDataWithoutPassword,
+      sessionCount: summaries.length,
+      summaries
+    }
+
+
+  }catch(err){
+    console.error("Error fetching user data:", err);
+    return { error: "Failed to fetch user data" };
+  }
+  
 };

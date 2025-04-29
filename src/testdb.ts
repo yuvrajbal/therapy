@@ -1,6 +1,5 @@
-import { PrismaClient } from "./generated/prisma/client";
+import prisma from "./lib/prisma"; // Adjust the import path as necessary
 
-const prisma = new PrismaClient();
 
 async function testDB() {
   try {

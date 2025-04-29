@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import {  VapiPayload, VapiWebhookEnum } from "../types/vapi.types";
 import { endOfCallReportHandler } from "./endCallReport";
-import { assistantRequestHandler } from "./assistantRequest";
 import { fetchUserDataHandler } from "./toolCall";
 export const webhookHandler = async (
   req: Request,
