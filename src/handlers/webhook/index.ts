@@ -15,13 +15,7 @@ export const webhookHandler = async (
 
     console.log(req.body)
     const payload = req.body.message as VapiPayload;
-    console.log("vapi payload below")
-    console.log("vapi payload below")
-
-    console.log("vapi payload below")
-
-    console.log("vapi payload below")
-    console.log(payload)
+    
     switch (payload.type) {
       case VapiWebhookEnum.END_OF_CALL_REPORT:
         await endOfCallReportHandler(payload);

@@ -66,7 +66,7 @@ export const endOfCallReportHandler = async (
       }
     } catch (dbError) {
       console.error("Database error while saving user data:", dbError);
-    }
+    } 
     
     return;
    
