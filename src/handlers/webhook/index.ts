@@ -2,12 +2,26 @@ import { Request, Response } from "express";
 import {  VapiPayload, VapiWebhookEnum } from "../types/vapi.types";
 import { endOfCallReportHandler } from "./endCallReport";
 import { fetchUserDataHandler } from "./toolCall";
+
 export const webhookHandler = async (
   req: Request,
   res: Response
 ): Promise<any> => {
   try {
+    console.log("webhook req")
+    console.log("webhook req")
+    console.log("webhook req")
+    console.log("webhook req body below")
+
+    console.log(req.body)
     const payload = req.body.message as VapiPayload;
+    console.log("vapi payload below")
+    console.log("vapi payload below")
+
+    console.log("vapi payload below")
+
+    console.log("vapi payload below")
+    console.log(payload)
     switch (payload.type) {
       case VapiWebhookEnum.END_OF_CALL_REPORT:
         await endOfCallReportHandler(payload);

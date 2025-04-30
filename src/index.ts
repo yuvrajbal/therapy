@@ -1,10 +1,11 @@
 // server.ts
 import express from 'express';
+import { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { connectToDatabase } from './database';
 import bodyParser from "body-parser";
 import { webhookHandler } from './handlers/webhook';
+import { getUserDataHandler } from './handlers/userApi';
 // Initialize express app
 const app = express();
 const host = "localhost";
@@ -26,7 +27,7 @@ app.get('/', (req, res) => {
 });
 
 app.use("/webhook", webhookHandler);
-
+app.get("/api/user/:userID", getUserDataHandler);
 // startServer();
 app.listen(port, host, () => {
   console.log(`[ ready ] http://${host}:${port}`);

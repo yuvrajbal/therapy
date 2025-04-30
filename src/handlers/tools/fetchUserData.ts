@@ -11,11 +11,11 @@ export const fetchUserData = async ({
   toolCallparameters,
 }: fetchUserDataParams) => {
   const {userID} = toolCallparameters
-  console.log("Fetching user data for userId from toolcall", userID)
+  console.log("Fetching user data for userId", userID)
   try{
     const userData = await prisma.user.findUnique({
       where:{
-        id:"db874e6e-cb59-4068-899e-3b316b44fbe0"
+        id:userID
       },
       include:{
         sessions:{
